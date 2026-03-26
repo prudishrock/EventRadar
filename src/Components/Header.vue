@@ -1,5 +1,13 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
+
+const isAdmin = ref(false)
+
+onMounted(() => {
+  localStorage.setItem('isAdmin', 'true')
+  isAdmin.value = localStorage.getItem('isAdmin') === 'true'
+})
 </script>
 
 <template>
@@ -17,6 +25,11 @@ import { RouterLink } from 'vue-router'
         <li>
           <RouterLink to="/events" class="header-nav-link" active-class="router-link-active">
             Etkinlikler
+          </RouterLink>
+        </li>
+        <li v-if="isAdmin">
+          <RouterLink to="/admin" class="header-nav-link" active-class="router-link-active">
+            Yönetim
           </RouterLink>
         </li>
       </ul>

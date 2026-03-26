@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import ImageSlider from '@/components/ImageSlider.vue'
+import ImageSlider from '@/Components/ImageSlider.vue'
 
 interface TopEvent {
   id: number
