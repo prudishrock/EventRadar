@@ -40,6 +40,13 @@ export async function addEvent(events: EventItem[]): Promise<EventItem[]> {
   return events
 }
 
+export async function updateEvent(event: EventItem): Promise<EventItem[]> {
+  const events = await getEvents()
+  const updatedEvents = events.map((item) => (item.id === event.id ? event : item))
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedEvents))
+  return updatedEvents
+}
+
 export async function deleteEvent(event: EventItem): Promise<EventItem[]> {
   let events = await getEvents()
   events = events.filter((e) => e.id !== event.id)

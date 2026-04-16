@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
-import { addEvent, deleteEvent, getEvents, type EventItem } from '@/services/eventService'
+import { addEvent, deleteEvent, getEvents, updateEvent, type EventItem } from '@/services/eventService'
 
 const title = ref('Yönetim Paneli')
 const description = ref('Etkinlikleri ve içerikleri yönetin.')
 
 const events = ref<EventItem[]>([])
 const loading = ref(false)
+const editingId = ref<number | null>(null)
 
 const newEvent = ref<EventItem>({
   id: 0,
@@ -20,7 +21,10 @@ const newEvent = ref<EventItem>({
   quantity: 0,
 })
 
+const isEditing = computed(() => editingId.value !== null)
+
 function onAdd() {
+  editingId.value = null
   const row: EventItem = {
     id: 0,
     name: '',
@@ -32,12 +36,26 @@ function onAdd() {
 }
 
 async function onSave() {
-  await addEvent(events.value)
+  if (isEditing.value) {
+    events.value = await updateEvent(newEvent.value)
+    editingId.value = null
+    return
+  }
+
+  events.value = await addEvent(events.value)
+}
+
+function onEdit(row: EventItem) {
+  editingId.value = row.id
+  newEvent.value = { ...row }
 }
 
 async function onDelete(row: EventItem) {
-  await deleteEvent(row).then( res => {
-    events.value=res;
+  await deleteEvent(row).then((res) => {
+    events.value = res
+    if (editingId.value === row.id) {
+      editingId.value = null
+    }
   })
 }
 
@@ -61,7 +79,9 @@ onMounted(async () => {
         <Button label="Kaydet" icon="pi pi-check" @click="onSave" />
       </div>
       <div v-if="events.length > 0" class="edit-form">
-        <label class="edit-form-label">Yeni satırı düzenle (tablo üstü)</label>
+        <label class="edit-form-label">
+          {{ isEditing ? 'Etkinliği güncelle' : 'Yeni satırı düzenle (tablo üstü)' }}
+        </label>
         <div class="edit-form-fields">
           <div class="edit-field">
             <label for="edit-id">Id</label>
@@ -86,6 +106,18 @@ onMounted(async () => {
         <Column field="name" header="Name" />
         <Column field="category" header="Category" />
         <Column field="quantity" header="Quantity" />
+        <Column header="Güncelle" :exportable="false">
+          <template #body="{ data }">
+            <Button
+              label="Güncelle"
+              icon="pi pi-pencil"
+              severity="secondary"
+              size="small"
+              aria-label="Güncelle"
+              @click="onEdit(data)"
+            />
+          </template>
+        </Column>
         <Column header="Sil" :exportable="false">
           <template #body="{ data }">
             <Button
