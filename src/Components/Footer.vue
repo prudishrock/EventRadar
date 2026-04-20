@@ -11,7 +11,6 @@ import { RouterLink } from 'vue-router'
       </p>
       <nav class="footer-nav">
         <RouterLink to="/" class="footer-link">Ana Sayfa</RouterLink>
-        <RouterLink to="/events" class="footer-link">Etkinlikler</RouterLink>
       </nav>
     </div>
   </footer>

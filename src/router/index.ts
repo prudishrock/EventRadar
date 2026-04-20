@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '@/Pages/Home/index.vue'
-import Events from '@/Pages/Events/index.vue'
 import Admin from '@/Pages/Admin/index.vue'
 
 const router = createRouter({
@@ -10,11 +9,6 @@ const router = createRouter({
       path: '/',
       name: 'Home',
       component: Home,
-    },
-    {
-      path: '/events',
-      name: 'Events',
-      component: Events,
     },
     {
       path: '/admin',

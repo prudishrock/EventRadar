@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-
-interface Slide {
-  image: string
-  title?: string
-  subtitle?: string
-}
+import type { Slide } from '@/Interfaces/Slide'
 
 const props = withDefaults(
   defineProps<{ slides?: Slide[]; interval?: number }>(),
